@@ -45,7 +45,7 @@ public class UserManager {
     }
 
     // Ovo je za prijavu korisnika
-    public boolean LoginUser(String username, String password){
+    public boolean loginUser(String username, String password){
         List<User> users = loadUsers();
 
         for(User u : users){
