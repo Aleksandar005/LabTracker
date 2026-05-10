@@ -1,7 +1,11 @@
 package gui;
 
+import util.Config;
 import util.UserManager;
-
+import model.Session;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -102,15 +106,45 @@ public class LoginFrame extends JFrame {
             return;
         }
 
-        if (userManager.loginUser(username, password)) {
-            JOptionPane.showMessageDialog(this,
-                    "Uspesna prijava! Dobrodosli, " + username + ".",
-                    "Uspeh", JOptionPane.INFORMATION_MESSAGE);
-            // TODO: otvoriti glavni prozor aplikacije
-        } else {
+        if (!userManager.loginUser(username, password)) {
             JOptionPane.showMessageDialog(this,
                     "Pogresno korisnicko ime ili lozinka.",
                     "Greska", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // korisnik je autentifikovan, sad ga trazimo u bazi
+        if (!ucitajIstrazivacaIzBaze(username)) {
+            JOptionPane.showMessageDialog(this,
+                    "Korisnik nije registrovan kao istrazivac.",
+                    "Greska", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        JOptionPane.showMessageDialog(this,
+                "Uspesna prijava! Dobrodosli, " + Session.getIme() + " " + Session.getPrezime() + ".",
+                "Uspeh", JOptionPane.INFORMATION_MESSAGE);
+
+        new MainFrame().setVisible(true);
+        this.dispose();
+    }
+
+    private boolean ucitajIstrazivacaIzBaze(String kontakt) {
+        String query = "SELECT istrazivac_id, ime, prezime FROM istrazivac WHERE kontakt = ?";
+        try {
+            PreparedStatement ps = Config.getConnection().prepareStatement(query);
+            ps.setString(1, kontakt);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt("istrazivac_id");
+                String ime = rs.getString("ime");
+                String prezime = rs.getString("prezime");
+                Session.set(id, ime, prezime, kontakt);
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

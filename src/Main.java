@@ -1,10 +1,9 @@
-import gui.LoginFrame;
+import util.Config;
+import util.Launcher;
 
-import javax.swing.*;
-
-public class Main{
-    public static void main(String[] args){
-        LoginFrame loginFrame = new LoginFrame();
-        loginFrame.setVisible(true);
+public class Main {
+    public static void main(String[] args) {
+        Runtime.getRuntime().addShutdownHook(new Thread(Config::disconnect));
+        Launcher.launch(args);
     }
 }
