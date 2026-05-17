@@ -43,7 +43,8 @@ public class DeleteSessionDialog extends JDialog {
             }
 
             int izvodjenjeId = (int) table.getValueAt(selectedRow,6);
-            boolean success = DeleteSessionController.deleteSession(izvodjenjeId);
+            int sesijaId = (int) table.getValueAt(selectedRow,7);
+            boolean success = DeleteSessionController.deleteSession(izvodjenjeId, sesijaId);
 
             if(!success){
                 JOptionPane.showMessageDialog(this,"Niste član ove sesije, brisanje nije dozvoljeno");

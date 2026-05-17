@@ -10,7 +10,7 @@ public class SessionTable extends JTable {
 
     public SessionTable(List<SessionDto> sessionDtos) {
 
-        String[] columns = {"datum", "vreme_pocetka", "vreme_zavrsetka", "temperatura", "vlaznost", "pritisak", "izvodjenje"};
+        String[] columns = {"datum", "vreme_pocetka", "vreme_zavrsetka", "temperatura", "vlaznost", "pritisak", "izvodjenje", "sesija"};
 
         DefaultTableModel model = new DefaultTableModel(columns,0);
 
@@ -22,7 +22,8 @@ public class SessionTable extends JTable {
                     s.getTemperatura(),
                     s.getVlaznost(),
                     s.getPritisak(),
-                    s.getIzvodjenjeId()
+                    s.getIzvodjenjeId(),
+                    s.getSesijaId()
             });
         }
 

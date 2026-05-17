@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 public class SessionDto {
@@ -21,9 +21,9 @@ public class SessionDto {
                 Date datum = rs.getDate("datum");
                 Time vremePocetka = rs.getTime("vreme_pocetka");
                 Time vremeZavrsetka = rs.getTime("vreme_zavrsetka");
-                double temperatura = rs.getDouble("temperatura");
-                double vlaznost = rs.getDouble("vlaznost");
-                double pritisak = rs.getDouble("pritisak");
+                Double temperatura = (Double) rs.getObject("temperatura");
+                Double vlaznost = (Double) rs.getObject("vlaznost");
+                Double pritisak = (Double) rs.getObject("pritisak");
                 int izvodjenjeId = rs.getInt("izvodjenje_id");
                 int laboratorijaId = rs.getInt("laboratorija_id");
                 SessionDto sessionDto = new SessionDto(sesijaId,datum,vremePocetka,vremeZavrsetka,temperatura,vlaznost,pritisak,izvodjenjeId,laboratorijaId);
@@ -39,13 +39,13 @@ public class SessionDto {
     private final Date datum;
     private final Time vremePocetka;
     private final Time vremeZavrsetka;
-    private final double temperatura;
-    private final double vlaznost;
-    private final double pritisak;
+    private final Double temperatura;
+    private final Double vlaznost;
+    private final Double pritisak;
     private final int izvodjenjeId;
     private final int laboratorijaId;
 
-    public SessionDto(int sesijaId, Date datum, Time vremePocetka, Time vremeZavrsetka, double temperatura, double vlaznost, double pritisak, int izvodjenjeId, int laboratorijaId) {
+    public SessionDto(int sesijaId, Date datum, Time vremePocetka, Time vremeZavrsetka, Double temperatura, Double vlaznost, Double pritisak, int izvodjenjeId, int laboratorijaId) {
         this.sesijaId = sesijaId;
         this.datum = datum;
         this.vremePocetka = vremePocetka;
@@ -73,15 +73,15 @@ public class SessionDto {
         return vremeZavrsetka;
     }
 
-    public double getTemperatura() {
+    public Double getTemperatura() {
         return temperatura;
     }
 
-    public double getVlaznost() {
+    public Double getVlaznost() {
         return vlaznost;
     }
 
-    public double getPritisak() {
+    public Double getPritisak() {
         return pritisak;
     }
 

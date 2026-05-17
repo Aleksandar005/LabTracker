@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 
 public class DeleteSessionController {
 
-    public static boolean deleteSession(int izvodjenjeId) {
+    public static boolean deleteSession(int izvodjenjeId, int sesijaId) {
         Connection connection = Config.getConnection();
 
         int istrazivacId = Session.getIstrazivacId();
@@ -30,10 +30,10 @@ public class DeleteSessionController {
             }
 
             String deleteQuery = "DELETE FROM sesija " +
-                                "WHERE izvodjenje_id = ?";
+                                "WHERE sesija_id = ?";
 
             PreparedStatement ps2 = connection.prepareStatement(deleteQuery);
-            ps2.setInt(1,izvodjenjeId);
+            ps2.setInt(1, sesijaId);
             ps2.executeUpdate();
             return true;
 
