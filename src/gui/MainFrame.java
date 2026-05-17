@@ -5,6 +5,11 @@ import model.Session;
 import javax.swing.*;
 import java.awt.*;
 
+import gui.dialogs.DeleteSessionDialog;
+import model.dto.SessionDto;
+
+import util.Config;
+import java.util.List;
 public class MainFrame extends JFrame {
 
     public MainFrame() {
@@ -46,8 +51,17 @@ public class MainFrame extends JFrame {
                 "Forma jos nije implementirana."));
         btnPromena.addActionListener(e -> JOptionPane.showMessageDialog(this,
                 "Forma jos nije implementirana."));
-        btnBrisanje.addActionListener(e -> JOptionPane.showMessageDialog(this,
-                "Forma jos nije implementirana."));
+
+        btnBrisanje.addActionListener(e -> {
+
+            List<SessionDto> sessionDtos =
+                    SessionDto.readAll(Config.getConnection());
+
+            DeleteSessionDialog dialog =
+                    new DeleteSessionDialog(sessionDtos);
+
+            dialog.setVisible(true);
+        });
 
         add(mainPanel);
     }
