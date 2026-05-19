@@ -47,8 +47,7 @@ public class MainFrame extends JFrame {
         gbc.gridy = 3;
         mainPanel.add(btnBrisanje, gbc);
 
-        btnPregled.addActionListener(e -> JOptionPane.showMessageDialog(this,
-                "Forma jos nije implementirana."));
+        btnPregled.addActionListener(e -> new PregledIzvodjenjaFrame().setVisible(true));
         btnPromena.addActionListener(e -> JOptionPane.showMessageDialog(this,
                 "Forma jos nije implementirana."));
 
