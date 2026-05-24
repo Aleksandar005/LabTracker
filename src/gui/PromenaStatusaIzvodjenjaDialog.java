@@ -14,7 +14,7 @@ import java.util.List;
 
 public class PromenaStatusaIzvodjenjaDialog extends JDialog {
 
-    public PromenaStatusaIzvodjenjaDialog(List<IzvodjenjeDto> izvodjenjeDtos) {
+    public PromenaStatusaIzvodjenjaDialog() {
 
         setTitle("Promena statusa");
         setSize(1000, 600);
@@ -29,6 +29,7 @@ public class PromenaStatusaIzvodjenjaDialog extends JDialog {
         mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
 
         // tabela
+        List<IzvodjenjeDto> izvodjenjeDtos = PromenaStatusaController.ucitaj();
         IzvodjenjaTable tabela = new IzvodjenjaTable(izvodjenjeDtos);
         JScrollPane scrollPane = new JScrollPane(tabela);
 
