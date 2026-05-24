@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="65c3420e-eee6-4650-a69d-dc177fec1b3e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/controller/StatusController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/pregled/PregledIzvodjenjaController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/pregled/StatusController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/promena/PromenaStatusaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/promena/PromenaStatusaController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/PregledIzvodjenjaFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/PregledIzvodjenjaFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/PromenaStatusaIzvodjenjaDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/PromenaStatusaIzvodjenjaDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/tables/IzvodjenjaTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/tables/IzvodjenjaTable.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

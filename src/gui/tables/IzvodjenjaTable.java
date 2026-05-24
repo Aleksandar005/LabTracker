@@ -22,8 +22,8 @@ public class IzvodjenjaTable extends JTable {
                     izvodjenjeDto.getFizickaVelicina(),
                     izvodjenjeDto.getDatum(),
                     izvodjenjeDto.getStatus(),
-                    izvodjenjeDto.getRezultat(),
-                    izvodjenjeDto.getMernaNesigurnost()
+                    izvodjenjeDto.getRezultat() == null ? "-" : izvodjenjeDto.getRezultat(),
+                    izvodjenjeDto.getMernaNesigurnost() == null ? "-" : izvodjenjeDto.getMernaNesigurnost()
             });
         }
 
