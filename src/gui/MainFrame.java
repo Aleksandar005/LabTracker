@@ -1,11 +1,13 @@
 package gui;
 
+import controller.promena.PromenaStatusaController;
 import model.Session;
 
 import javax.swing.*;
 import java.awt.*;
 
 import gui.dialogs.DeleteSessionDialog;
+import model.dto.IzvodjenjeDto;
 import model.dto.SessionDto;
 
 import util.Config;
@@ -48,8 +50,13 @@ public class MainFrame extends JFrame {
         mainPanel.add(btnBrisanje, gbc);
 
         btnPregled.addActionListener(e -> new PregledIzvodjenjaFrame().setVisible(true));
-        btnPromena.addActionListener(e -> JOptionPane.showMessageDialog(this,
-                "Forma jos nije implementirana."));
+        btnPromena.addActionListener(e -> {
+            List<IzvodjenjeDto> izvodjenjeDtos =
+                    PromenaStatusaController.ucitaj();
+            PromenaStatusaIzvodjenjaDialog dialog =
+                    new PromenaStatusaIzvodjenjaDialog(izvodjenjeDtos);
+            dialog.setVisible(true);
+        });
 
         btnBrisanje.addActionListener(e -> {
 

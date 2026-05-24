@@ -1,6 +1,11 @@
 package model.dto;
 
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class IzvodjenjeDto {
+
 
     private final int izvodjenjeId;
     private final String eksperiment;
