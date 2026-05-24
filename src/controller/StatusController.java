@@ -1,4 +1,4 @@
-package controller.pregled;
+package controller;
 
 import model.dto.StatusDto;
 import util.Config;

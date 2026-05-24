@@ -1,7 +1,7 @@
 package gui;
 
-import controller.pregled.PregledIzvodjenjaController;
-import controller.pregled.StatusController;
+import controller.IzvodjenjaController;
+import controller.StatusController;
 import model.dto.IzvodjenjeDto;
 import model.dto.StatusDto;
 
@@ -78,7 +78,7 @@ public class PregledIzvodjenjaFrame extends JFrame {
         StatusDto izabrani = (StatusDto) statusComboBox.getSelectedItem();
         Integer statusId = izabrani == null ? null : izabrani.getId();
 
-        List<IzvodjenjeDto> lista = PregledIzvodjenjaController.ucitaj(statusId);
+        List<IzvodjenjeDto> lista = IzvodjenjaController.ucitaj(statusId);
         for (IzvodjenjeDto dto : lista) {
             model.addRow(new Object[]{
                     dto.getEksperiment(),

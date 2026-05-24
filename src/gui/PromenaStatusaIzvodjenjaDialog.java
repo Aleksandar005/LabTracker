@@ -1,6 +1,7 @@
 package gui;
 
-import controller.pregled.StatusController;
+import controller.IzvodjenjaController;
+import controller.StatusController;
 import controller.promena.PromenaStatusaController;
 import gui.tables.IzvodjenjaTable;
 import model.dto.IzvodjenjeDto;
@@ -29,7 +30,7 @@ public class PromenaStatusaIzvodjenjaDialog extends JDialog {
         mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
 
         // tabela
-        List<IzvodjenjeDto> izvodjenjeDtos = PromenaStatusaController.ucitaj();
+        List<IzvodjenjeDto> izvodjenjeDtos = IzvodjenjaController.ucitaj(null);
         IzvodjenjaTable tabela = new IzvodjenjaTable(izvodjenjeDtos);
         JScrollPane scrollPane = new JScrollPane(tabela);
 

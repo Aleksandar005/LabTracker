@@ -1,4 +1,4 @@
-package controller.pregled;
+package controller;
 
 import model.dto.IzvodjenjeDto;
 import model.Session;
@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PregledIzvodjenjaController {
+public class IzvodjenjaController {
 
     public static List<IzvodjenjeDto> ucitaj(Integer statusId) {
         Connection connection = Config.getConnection();
