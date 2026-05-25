@@ -175,7 +175,8 @@ CREATE TABLE sesija_alat (
 -- Posmatraju se samo izvodjaci, jer su samo oni radili eksperiment (nema smisla da se posmatraju dizajneri, oni samo osmisljaju eksperiment)
 -- Uslov za rangiranje je da izvodjaci imaju bar 2 uspesno zavrsena izvodjenja
 
-CREATE VIEW pogled_najproduktivniji_istrazivaci AS SELECT
+CREATE VIEW pogled_najproduktivniji_istrazivaci AS
+SELECT
 	i.istrazivac_id,
 	i.ime,
 	i.prezime,
@@ -186,8 +187,85 @@ CREATE VIEW pogled_najproduktivniji_istrazivaci AS SELECT
 FROM istrazivac i
 JOIN akademsko_zvanje az ON i.zvanje_id = az.zvanje_id
 JOIN istrazivac_izvodjenje ii ON ii.istrazivac_id = i.istrazivac_id
-JOIN izvodjenje izv ON izv.izvodjenje_id = izv.status_id
-WHERE s.naziv = "zavrseno_uspesno"
+JOIN izvodjenje izv ON izv.izvodjenje_id = ii.izvodjenje_id
+JOIN status_izvodjenja s ON s.status_id = izv.status_id
+WHERE s.naziv = 'zavrseno_uspesno'
 GROUP BY i.istrazivac_id, i.ime, i.prezime, az.naziv, i.oblast_specijalizacije
 HAVING COUNT(*) >= 2
 ORDER BY broj_uspesnih_izvodjenja DESC;
+
+
+-- Procedura koja se poziva pri zavrsetku sesije
+-- Ona postavlja status izvodjenja na "zavrseno_uspesno" i smanjuje kolicinu resursa u laboratoriji
+-- za onoliko koliko ih je korisceno u toj sesiji.
+-- Ako jedna operacija ne uspe, ceopostupak se ponistava. Procedura takodje proverava da li sesija uopste postoji
+-- da li je izvodjenje vec zavrseno i da li inverntar laboratorije ne pada u negativno
+
+DELIMITER //
+
+CREATE PROCEDURE zavrsi_sesiju(IN p_sesija_id INT)
+BEGIN
+    DECLARE v_izvodjenje_id INT DEFAULT NULL;
+    DECLARE v_laboratorija_id INT;
+    DECLARE v_uspesno_status_id INT;
+    DECLARE v_trenutni_status_id INT;
+    DECLARE v_nedostaje INT;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
+    START TRANSACTION;
+
+    -- Citamo izvodjenje_id i laboratorija_id iz sesije
+    SELECT izvodjenje_id, laboratorija_id INTO v_izvodjenje_id, v_laboratorija_id
+    FROM sesija WHERE sesija_id = p_sesija_id;
+
+    -- Da li sesija postoji provera
+    IF v_izvodjenje_id IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Sesija sa zadatim id-jem ne postoji.';
+    END IF;
+
+    -- Citamo status_id samo za za zavrseno_uspesno
+    SELECT status_id INTO v_uspesno_status_id
+    FROM status_izvodjenja WHERE naziv = 'zavrseno_uspesno';
+
+    -- Citami trenutni status izvodjenja
+    SELECT status_id INTO v_trenutni_status_id
+    FROM izvodjenje WHERE izvodjenje_id = v_izvodjenje_id;
+
+    -- Provera da izvodjenje nije vec zavrseno mozda
+    IF v_trenutni_status_id = v_uspesno_status_id THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Izvodjenje je vec zavrseno uspesno.';
+    END IF;
+
+    -- Provera da inventar laboratorije ne bi pao u negativno
+    SELECT COUNT(*) INTO v_nedostaje
+    FROM sesija_resurs sr
+    JOIN laboratorija_resurs lr
+        ON lr.resurs_id = sr.resurs_id AND lr.laboratorija_id = v_laboratorija_id
+    WHERE sr.sesija_id = p_sesija_id AND lr.kolicina < sr.kolicina;
+
+    IF v_nedostaje > 0 THEN
+    		SIGNAL SQLSTATE '45000'
+    			SET MESSAGE_TEXT = 'Nema dovoljno resursa u inventaru za ovu sesiju.';
+    END IF;
+
+    -- Smanjujemo kolicinu resursa u lab
+    UPDATE laboratorija_resurs lr
+    JOIN sesija_resurs sr ON sr.resurs_id = lr.resurs_id
+    SET lr.kolicina = lr.kolicina - sr.kolicina
+    WHERE sr.sesija_id = p_sesija_id AND lr.laboratorija_id = v_laboratorija_id;
+
+    -- Postavi status izvodjenja na zavrseno_uspesno
+    UPDATE izvodjenje
+    SET status_id = v_uspesno_status_id WHERE izvodjenje_id = v_izvodjenje_id;
+
+   	COMMIT;
+END //
+
+DELIMITER ;
