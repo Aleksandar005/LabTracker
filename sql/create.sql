@@ -170,3 +170,24 @@ CREATE TABLE sesija_alat (
 	FOREIGN KEY (sesija_id) REFERENCES sesija(sesija_id) ON UPDATE CASCADE ON DELETE CASCADE,
 	FOREIGN KEY (alat_id) REFERENCES alat(alat_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+-- Pogled koji prikazuje najproduktivnije istrazivace na osnovu uspesno zavrsenih izvodjenja
+-- Posmatraju se samo izvodjaci, jer su samo oni radili eksperiment (nema smisla da se posmatraju dizajneri, oni samo osmisljaju eksperiment)
+-- Uslov za rangiranje je da izvodjaci imaju bar 2 uspesno zavrsena izvodjenja
+
+CREATE VIEW pogled_najproduktivniji_istrazivaci AS SELECT
+	i.istrazivac_id,
+	i.ime,
+	i.prezime,
+	az.naziv AS zvanje,
+	i.oblast_specijalizacije,
+	COUNT(*) AS broj_uspesnih_izvodjenja,
+	AVG(izv.broj_ponavljanja_merenja) AS prosecan_broj_ponavljanja
+FROM istrazivac i
+JOIN akademsko_zvanje az ON i.zvanje_id = az.zvanje_id
+JOIN istrazivac_izvodjenje ii ON ii.istrazivac_id = i.istrazivac_id
+JOIN izvodjenje izv ON izv.izvodjenje_id = izv.status_id
+WHERE s.naziv = "zavrseno_uspesno"
+GROUP BY i.istrazivac_id, i.ime, i.prezime, az.naziv, i.oblast_specijalizacije
+HAVING COUNT(*) >= 2
+ORDER BY broj_uspesnih_izvodjenja DESC;

@@ -2205,7 +2205,7 @@ INSERT INTO eksperiment_dizajner(eksperiment_id, istrazivac_id) VALUES
 
 
 INSERT INTO izvodjenje(datum, status_id, broj_ponavljanja_merenja, rezultat, merna_nesigurnost, eksperiment_id) VALUES
-	('2025-12-26', 5, 88, 94.98, 0.19, 49),
+	('2025-12-26', 4, 88, 94.98, 0.19, 49),
 	('2022-03-11', 5, 94, 86.281, 0.082, 19),
 	('2023-12-02', 4, 49, 31.021, 0.385, 58),
 	('2024-11-06', 1, NULL, NULL, NULL, 17),
@@ -2213,14 +2213,14 @@ INSERT INTO izvodjenje(datum, status_id, broj_ponavljanja_merenja, rezultat, mer
 	('2025-08-28', 4, 79, 80.765, 0.304, 64),
 	('2023-04-19', 4, 68, 41.074, 0.041, 77),
 	('2022-04-18', 3, NULL, NULL, NULL, 80),
-	('2023-01-06', 2, 8, NULL, NULL, 84),
+	('2023-01-06', 4, 8, 12.450, 0.215, 84),
 	('2024-01-05', 1, NULL, NULL, NULL, 86),
 	('2024-06-03', 1, NULL, NULL, NULL, 14),
 	('2025-03-06', 3, NULL, NULL, NULL, 79),
 	('2023-08-24', 5, 56, 93.155, 0.047, 39),
 	('2024-06-13', 1, NULL, NULL, NULL, 98),
 	('2025-09-03', 3, NULL, NULL, NULL, 61),
-	('2023-02-23', 3, NULL, NULL, NULL, 43),
+	('2023-02-23', 4, 42, 56.820, 0.110, 43),
 	('2025-09-07', 2, 44, NULL, NULL, 8),
 	('2022-10-24', 5, 21, 48.418, 0.345, 91),
 	('2024-07-20', 3, NULL, NULL, NULL, 34),
@@ -2228,7 +2228,7 @@ INSERT INTO izvodjenje(datum, status_id, broj_ponavljanja_merenja, rezultat, mer
 	('2023-10-08', 3, NULL, NULL, NULL, 25),
 	('2022-02-01', 4, 90, 79.694, 0.369, 27),
 	('2025-07-02', 3, NULL, NULL, NULL, 45),
-	('2023-01-21', 2, 49, NULL, NULL, 37),
+	('2023-01-21', 4, 49, 73.295, 0.184, 37),
 	('2024-02-10', 3, NULL, NULL, NULL, 65),
 	('2024-01-04', 3, NULL, NULL, NULL, 44),
 	('2025-12-19', 5, 13, 83.221, 0.098, 44),
@@ -2243,7 +2243,7 @@ INSERT INTO izvodjenje(datum, status_id, broj_ponavljanja_merenja, rezultat, mer
 	('2024-03-04', 3, NULL, NULL, NULL, 5),
 	('2023-02-15', 5, 13, 79.923, 0.453, 20),
 	('2023-06-16', 5, 49, 77.576, 0.073, 13),
-	('2023-04-24', 1, NULL, NULL, NULL, 59),
+	('2023-04-24', 4, 35, 28.460, 0.142, 59),
 	('2025-12-28', 5, 24, 0.511, 0.466, 88),
 	('2022-06-15', 1, NULL, NULL, NULL, 14),
 	('2024-01-19', 3, NULL, NULL, NULL, 82),
@@ -2257,7 +2257,7 @@ INSERT INTO izvodjenje(datum, status_id, broj_ponavljanja_merenja, rezultat, mer
 	('2022-08-22', 1, NULL, NULL, NULL, 14),
 	('2025-01-03', 4, 60, 17.98, 0.298, 76),
 	('2025-10-12', 3, NULL, NULL, NULL, 43),
-	('2023-12-25', 5, 20, 97.371, 0.378, 60),
+	('2023-12-25', 4, 20, 97.371, 0.378, 60),
 	('2023-02-27', 4, 22, 45.613, 0.343, 91),
 	('2025-08-08', 2, 14, NULL, NULL, 79),
 	('2024-06-13', 2, 49, NULL, NULL, 86),
@@ -2275,7 +2275,7 @@ INSERT INTO izvodjenje(datum, status_id, broj_ponavljanja_merenja, rezultat, mer
 	('2022-03-22', 2, 33, NULL, NULL, 69),
 	('2024-07-20', 5, 67, 19.647, 0.341, 41),
 	('2024-10-26', 3, NULL, NULL, NULL, 56),
-	('2024-02-19', 1, NULL, NULL, NULL, 79),
+	('2024-02-19', 4, 58, 41.080, 0.275, 79),
 	('2025-03-28', 3, NULL, NULL, NULL, 8),
 	('2024-09-02', 1, NULL, NULL, NULL, 91),
 	('2024-02-28', 3, NULL, NULL, NULL, 4),
@@ -2354,7 +2354,7 @@ INSERT INTO izvodjenje(datum, status_id, broj_ponavljanja_merenja, rezultat, mer
 	('2025-07-08', 2, 44, NULL, NULL, 89),
 	('2022-10-06', 4, 88, 95.035, 0.314, 39),
 	('2024-07-01', 5, 40, 19.271, 0.493, 13),
-	('2024-09-17', 2, 34, NULL, NULL, 99);
+	('2024-09-17', 4, 34, 65.140, 0.198, 99);
 
 
 INSERT INTO istrazivac_izvodjenje(istrazivac_id, izvodjenje_id, uloga, beleske) VALUES
