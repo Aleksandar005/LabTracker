@@ -276,3 +276,85 @@ BEGIN
 END //
 
 DELIMITER ;
+
+-- Funkcija koja za zadatog istrazivaca vraca procenat uspesno zavrsenih izvodjenja u kojima je istrazivac
+-- bio u ulozi izvodjaca
+
+DELIMITER //
+
+CREATE FUNCTION procenat_uspesnih_izvodjenja(p_istrazivac_id INT)
+RETURNS DOUBLE
+DETERMINISTIC
+READS SQL DATA
+BEGIN
+	DECLARE v_ukupno INT;
+	DECLARE v_uspesnih INT;
+	DECLARE v_uspesno_status_id INT;
+
+    -- Procitaj status_id za zavrseno_uspesno
+    SELECT status_id INTO v_uspesno_status_id
+    FROM status_izvodjenja WHERE naziv = 'zavrseno_uspesno';
+
+    -- Prebroj sva izvodjenja u kojima je istrazivac bio izvodjac
+    SELECT COUNT(*) INTO v_ukupno
+    FROM istrazivac_izvodjenje WHERE istrazivac_id = p_istrazivac_id;
+
+    IF v_ukupno = 0 THEN
+        RETURN NULL;
+    END IF;
+
+    -- Prebroji koliko od tih izvodjenja je zavrseno uspesno
+    SELECT COUNT(*) INTO v_uspesnih
+    FROM istrazivac_izvodjenje ii JOIN izvodjenje izv ON izv.izvodjenje_id = ii.izvodjenje_id
+    WHERE ii.istrazivac_id = p_istrazivac_id AND izv.status_id = v_uspesno_status_id;
+
+    RETURN ROUND(v_uspesnih * 100.0 / v_ukupno, 2);
+END //
+
+DELIMITER ;
+
+
+-- Test funkcija koja testira gornju fju
+DELIMITER //
+
+CREATE FUNCTION test_procenat_uspesnih_izvodjenja()
+RETURNS BOOLEAN
+DETERMINISTIC
+READS SQL DATA
+BEGIN
+	DECLARE v_rezultat DOUBLE;
+
+	-- Test 1: istrazivac 15, ocekivano 60.0
+	SET v_rezultat = procenat_uspesnih_izvodjenja(15);
+	IF v_rezultat IS NULL OR v_rezultat <> 60.0 THEN
+		RETURN FALSE;
+	END IF;
+
+	-- Test 2: istrazivac 60, ocekivano 50.0
+	SET v_rezultat = procenat_uspesnih_izvodjenja(60);
+	IF v_rezultat IS NULL OR v_rezultat <> 50.0 THEN
+		RETURN FALSE;
+	END IF;
+
+	-- Test 3: istrazivac 95, ocekivano 20.0
+	SET v_rezultat = procenat_uspesnih_izvodjenja(95);
+	IF v_rezultat IS NULL OR v_rezultat <> 20.0 THEN
+		RETURN FALSE;
+	END IF;
+
+	-- Test 4: istrazivac 25 (bez izvodjenja), ocekivano NULL
+	SET v_rezultat = procenat_uspesnih_izvodjenja(25);
+	IF v_rezultat IS NOT NULL THEN
+		RETURN FALSE;
+	END IF;
+
+	-- Test 5: istrazivac 99999 (ne postoji), ocekivano NULL
+	SET v_rezultat = procenat_uspesnih_izvodjenja(99999);
+	IF v_rezultat IS NOT NULL THEN
+		RETURN FALSE;
+	END IF;
+
+	RETURN TRUE;
+END //
+
+DELIMITER ;
