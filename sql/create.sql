@@ -195,20 +195,20 @@ HAVING COUNT(*) >= 2
 ORDER BY broj_uspesnih_izvodjenja DESC;
 
 
--- Procedura koja se poziva pri zavrsetku sesije
--- Ona postavlja status izvodjenja na "zavrseno_uspesno" i smanjuje kolicinu resursa u laboratoriji
--- za onoliko koliko ih je korisceno u toj sesiji.
--- Ako jedna operacija ne uspe, ceopostupak se ponistava. Procedura takodje proverava da li sesija uopste postoji
--- da li je izvodjenje vec zavrseno i da li inverntar laboratorije ne pada u negativno
+-- Procedura koja se poziva kada zelimo da zavrsimo izvodjenje eksperimenta. Postavlja
+-- status izvodjenja na 'zavrseno_uspesno' i smanjuje kolicinu resursa u
+-- laboratorijama za sve resurse iskoriscene u svim sesijama tog izvodjenja.
+-- Sve se odvija u transakciji, ako bilo koja operacija ne uspe, ceo postupak
+-- se ponistava. Procedura proverava da izvodjenje postoji, da nije vec
+-- zavrseno i da ukupna potraznja resursa po laboratoriji ne prelazi inventar.
+
 
 DELIMITER //
 
-CREATE PROCEDURE zavrsi_sesiju(IN p_sesija_id INT)
+CREATE PROCEDURE zavrsi_izvodjenje(IN p_izvodjenje_id INT)
 BEGIN
-    DECLARE v_izvodjenje_id INT DEFAULT NULL;
-    DECLARE v_laboratorija_id INT;
     DECLARE v_uspesno_status_id INT;
-    DECLARE v_trenutni_status_id INT;
+    DECLARE v_trenutni_status_id INT DEFAULT NULL;
     DECLARE v_nedostaje INT;
 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -219,23 +219,19 @@ BEGIN
 
     START TRANSACTION;
 
-    -- Citamo izvodjenje_id i laboratorija_id iz sesije
-    SELECT izvodjenje_id, laboratorija_id INTO v_izvodjenje_id, v_laboratorija_id
-    FROM sesija WHERE sesija_id = p_sesija_id;
+    -- Citamo trenutni status izvodjenja
+    SELECT status_id INTO v_trenutni_status_id
+    FROM izvodjenje WHERE izvodjenje_id = p_izvodjenje_id;
 
-    -- Da li sesija postoji provera
-    IF v_izvodjenje_id IS NULL THEN
+    -- Da li izvodjenje postoji
+    IF v_trenutni_status_id IS NULL THEN
         SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Sesija sa zadatim id-jem ne postoji.';
+            SET MESSAGE_TEXT = 'Izvodjenje sa zadatim id-jem ne postoji.';
     END IF;
 
     -- Citamo status_id samo za za zavrseno_uspesno
     SELECT status_id INTO v_uspesno_status_id
     FROM status_izvodjenja WHERE naziv = 'zavrseno_uspesno';
-
-    -- Citami trenutni status izvodjenja
-    SELECT status_id INTO v_trenutni_status_id
-    FROM izvodjenje WHERE izvodjenje_id = v_izvodjenje_id;
 
     -- Provera da izvodjenje nije vec zavrseno mozda
     IF v_trenutni_status_id = v_uspesno_status_id THEN
@@ -245,25 +241,36 @@ BEGIN
 
     -- Provera da inventar laboratorije ne bi pao u negativno
     SELECT COUNT(*) INTO v_nedostaje
-    FROM sesija_resurs sr
-    JOIN laboratorija_resurs lr
-        ON lr.resurs_id = sr.resurs_id AND lr.laboratorija_id = v_laboratorija_id
-    WHERE sr.sesija_id = p_sesija_id AND lr.kolicina < sr.kolicina;
+    FROM (
+        SELECT s.laboratorija_id, sr.resurs_id, SUM(sr.kolicina) AS ukupno
+        FROM sesija s JOIN sesija_resurs sr ON sr.sesija_id = s.sesija_id
+        WHERE s.izvodjenje_id = p_izvodjenje_id
+        GROUP BY s.laboratorija_id, sr.resurs_id
+    ) AS potraznja
+    JOIN laboratorija_resurs lr ON lr.laboratorija_id = potraznja.laboratorija_id
+        AND lr.resurs_id = potraznja.resurs_id
+    WHERE lr.kolicina < potraznja.ukupno;
 
     IF v_nedostaje > 0 THEN
-    		SIGNAL SQLSTATE '45000'
-    			SET MESSAGE_TEXT = 'Nema dovoljno resursa u inventaru za ovu sesiju.';
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Nema dovoljno resursa u inventaru za sve sesije izvodjenja.';
     END IF;
 
-    -- Smanjujemo kolicinu resursa u lab
+    -- Smanji kolicinu resursa u laboratorijama za sve resurse iskoriscene u svakoj od sesija
     UPDATE laboratorija_resurs lr
-    JOIN sesija_resurs sr ON sr.resurs_id = lr.resurs_id
-    SET lr.kolicina = lr.kolicina - sr.kolicina
-    WHERE sr.sesija_id = p_sesija_id AND lr.laboratorija_id = v_laboratorija_id;
+    JOIN (
+        SELECT s.laboratorija_id, sr.resurs_id, SUM(sr.kolicina) AS ukupno
+        FROM sesija s JOIN sesija_resurs sr ON sr.sesija_id = s.sesija_id
+        WHERE s.izvodjenje_id = p_izvodjenje_id
+        GROUP BY s.laboratorija_id, sr.resurs_id
+    ) AS potraznja
+        ON lr.laboratorija_id = potraznja.laboratorija_id
+        AND lr.resurs_id = potraznja.resurs_id
+    SET lr.kolicina = lr.kolicina - potraznja.ukupno;
 
     -- Postavi status izvodjenja na zavrseno_uspesno
     UPDATE izvodjenje
-    SET status_id = v_uspesno_status_id WHERE izvodjenje_id = v_izvodjenje_id;
+    SET status_id = v_uspesno_status_id WHERE izvodjenje_id = p_izvodjenje_id;
 
    	COMMIT;
 END //
