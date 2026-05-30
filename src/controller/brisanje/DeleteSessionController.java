@@ -3,8 +3,6 @@ package controller.brisanje;
 import model.Session;
 import util.Config;
 import model.dto.SessionDto;
-
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,13 +48,18 @@ public class DeleteSessionController {
 
     public static List<SessionDto> ucitajSve() {
         Connection connection = Config.getConnection();
-        String query = "SELECT sesija_id, datum, vreme_pocetka, vreme_zavrsetka, " +
-                "temperatura, vlaznost, pritisak, izvodjenje_id, laboratorija_id FROM sesija";
+        int istrazivacId = Session.getIstrazivacId();
+
+        String query = "SELECT s.sesija_id, s.datum, s.vreme_pocetka, s.vreme_zavrsetka, " +
+                "s.temperatura, s.vlaznost, s.pritisak, s.izvodjenje_id, s.laboratorija_id " +
+                "FROM sesija s " + "JOIN istrazivac_izvodjenje ii ON ii.izvodjenje_id = s.izvodjenje_id " +
+                "WHERE ii.istrazivac_id = ?";
 
         List<SessionDto> sesije = new ArrayList<>();
         try {
-            Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, istrazivacId);
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 SessionDto dto = new SessionDto(
                         rs.getInt("sesija_id"),
