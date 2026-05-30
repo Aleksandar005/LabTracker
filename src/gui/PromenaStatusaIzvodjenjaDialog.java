@@ -77,11 +77,17 @@ public class PromenaStatusaIzvodjenjaDialog extends JDialog {
             int selectedRow = tabela.getSelectedRow();
             StatusDto izabrani = (StatusDto) statusComboBox.getSelectedItem();
             if(selectedRow == -1 || izabrani == null){
-                JOptionPane.showMessageDialog(this,
-                        "Morate izabrati izvodjenje i status.");
+                JOptionPane.showMessageDialog(this, "Morate izabrati izvodjenje i status.");
                 return;
             }
+
             int izvodjenjeId = (int) tabela.getValueAt(selectedRow,0);
+            int statusKolona = tabela.getColumnModel().getColumnIndex("Status");
+            String trenutniStatus = (String) tabela.getValueAt(selectedRow, statusKolona);
+            if (trenutniStatus.equals(izabrani.getNaziv())) {
+                JOptionPane.showMessageDialog(this, "Izvodjenje vec ima taj status.");
+                return;
+            }
             int statusId = izabrani.getId();
             boolean success = PromenaStatusaController.promeniStatus(izvodjenjeId,statusId);
 
@@ -89,19 +95,11 @@ public class PromenaStatusaIzvodjenjaDialog extends JDialog {
                 JOptionPane.showMessageDialog(this,"Doslo je do greske, probajte ponovo");
                 return;
             }
+
             DefaultTableModel model = (DefaultTableModel) tabela.getModel();
+            model.setValueAt(izabrani.getNaziv(), selectedRow, statusKolona);
 
-            int statusKolona = tabela.getColumnModel()
-                    .getColumnIndex("Status");
-
-            model.setValueAt(
-                    izabrani.getNaziv(),
-                    selectedRow,
-                    statusKolona
-            );
-
-            JOptionPane.showMessageDialog(this,
-                    "Status je uspešno promenjen.");
+            JOptionPane.showMessageDialog(this, "Status je uspešno promenjen.");
 
 
         });
