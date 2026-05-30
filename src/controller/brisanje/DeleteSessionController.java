@@ -2,6 +2,11 @@ package controller.brisanje;
 
 import model.Session;
 import util.Config;
+import model.dto.SessionDto;
+
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -41,5 +46,34 @@ public class DeleteSessionController {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public static List<SessionDto> ucitajSve() {
+        Connection connection = Config.getConnection();
+        String query = "SELECT sesija_id, datum, vreme_pocetka, vreme_zavrsetka, " +
+                "temperatura, vlaznost, pritisak, izvodjenje_id, laboratorija_id FROM sesija";
+
+        List<SessionDto> sesije = new ArrayList<>();
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                SessionDto dto = new SessionDto(
+                        rs.getInt("sesija_id"),
+                        rs.getDate("datum"),
+                        rs.getTime("vreme_pocetka"),
+                        rs.getTime("vreme_zavrsetka"),
+                        (Double) rs.getObject("temperatura"),
+                        (Double) rs.getObject("vlaznost"),
+                        (Double) rs.getObject("pritisak"),
+                        rs.getInt("izvodjenje_id"),
+                        rs.getInt("laboratorija_id")
+                );
+                sesije.add(dto);
+            }
+            return sesije;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

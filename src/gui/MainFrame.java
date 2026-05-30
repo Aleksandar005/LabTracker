@@ -1,5 +1,6 @@
 package gui;
 
+import controller.brisanje.DeleteSessionController;
 import model.Session;
 
 import javax.swing.*;
@@ -51,13 +52,8 @@ public class MainFrame extends JFrame {
         btnPromena.addActionListener(e -> new PromenaStatusaIzvodjenjaDialog().setVisible(true));
 
         btnBrisanje.addActionListener(e -> {
-
-            List<SessionDto> sessionDtos =
-                    SessionDto.readAll(Config.getConnection());
-
-            DeleteSessionDialog dialog =
-                    new DeleteSessionDialog(sessionDtos);
-
+            List<SessionDto> sessionDtos = DeleteSessionController.ucitajSve();
+            DeleteSessionDialog dialog = new DeleteSessionDialog(sessionDtos);
             dialog.setVisible(true);
         });
 
