@@ -4,8 +4,6 @@ import util.UserManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 // Ova klasa je napravljena uz pomoc AI-a (zbog gui karakteristika)
 public class SignUpFrame extends JFrame {
@@ -86,19 +84,8 @@ public class SignUpFrame extends JFrame {
         add(mainPanel);
 
         // listeneri
-        signUpButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleSignUp();
-            }
-        });
-
-        goToLoginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                goBackToLogin();
-            }
-        });
+        signUpButton.addActionListener(e -> handleSignUp());
+        goToLoginButton.addActionListener(e -> goBackToLogin());
     }
 
     private void handleSignUp() {

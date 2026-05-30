@@ -31,23 +31,13 @@ public class PregledIzvodjenjaFrame extends JFrame {
         topPanel.add(new JLabel("Filter po statusu:"));
 
         statusComboBox = new JComboBox<>();
-        statusComboBox.addItem(null);
+        statusComboBox.addItem(new StatusDto(0, "Svi"));
         List<StatusDto> statusi = StatusController.ucitajSve();
         for (StatusDto s : statusi) {
             statusComboBox.addItem(s);
         }
-        statusComboBox.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                                                          boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value == null) {
-                    setText("Svi");
-                }
-                return this;
-            }
-        });
         statusComboBox.addActionListener(e -> ucitajPodatke());
+
         topPanel.add(statusComboBox);
 
         JButton btnOsvezi = new JButton("Osvezi");
@@ -76,7 +66,7 @@ public class PregledIzvodjenjaFrame extends JFrame {
     private void ucitajPodatke() {
         model.setRowCount(0);
         StatusDto izabrani = (StatusDto) statusComboBox.getSelectedItem();
-        Integer statusId = izabrani == null ? null : izabrani.getId();
+        Integer statusId = izabrani.getId() == 0 ? null : izabrani.getId();
 
         List<IzvodjenjeDto> lista = IzvodjenjaController.ucitaj(statusId);
         for (IzvodjenjeDto dto : lista) {

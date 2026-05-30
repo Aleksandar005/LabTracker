@@ -8,8 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 // Ova klasa je napravljena uz pomoc AI-a (zbog gui karakteristika)
 public class LoginFrame extends JFrame {
@@ -80,19 +78,8 @@ public class LoginFrame extends JFrame {
         add(mainPanel);
 
         // listeneri
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleLogin();
-            }
-        });
-
-        goToSignUpButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                openSignUp();
-            }
-        });
+        loginButton.addActionListener(e -> handleLogin());
+        goToSignUpButton.addActionListener(e -> openSignUp());
     }
 
     private void handleLogin() {

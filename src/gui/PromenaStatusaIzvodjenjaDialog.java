@@ -43,7 +43,7 @@ public class PromenaStatusaIzvodjenjaDialog extends JDialog {
         // combo box
         JComboBox<StatusDto> statusComboBox = new JComboBox<>();
 
-        statusComboBox.addItem(null);
+        statusComboBox.addItem(new StatusDto(0, "Odaberite status"));
 
         List<StatusDto> statusi = StatusController.ucitajSve();
 
@@ -51,33 +51,14 @@ public class PromenaStatusaIzvodjenjaDialog extends JDialog {
             statusComboBox.addItem(s);
         }
 
-        statusComboBox.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(
-                    JList<?> list,
-                    Object value,
-                    int index,
-                    boolean isSelected,
-                    boolean cellHasFocus) {
-
-                super.getListCellRendererComponent(
-                        list, value, index, isSelected, cellHasFocus);
-
-                if (value == null) {
-                    setText("Odaberite status");
-                }
-
-                return this;
-            }
-        });
-
         JButton btnSave = new JButton("Sačuvaj");
 
         btnSave.addActionListener(e -> {
             int selectedRow = tabela.getSelectedRow();
             StatusDto izabrani = (StatusDto) statusComboBox.getSelectedItem();
-            if(selectedRow == -1 || izabrani == null){
-                JOptionPane.showMessageDialog(this, "Morate izabrati izvodjenje i status.");
+            if(selectedRow == -1 || izabrani.getId() == 0){
+                JOptionPane.showMessageDialog(this,
+                        "Morate izabrati izvodjenje i status.");
                 return;
             }
 
