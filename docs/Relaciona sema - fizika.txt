@@ -1,0 +1,27 @@
+Relaciona sema (fizika)
+Teorija(teorija_id, naziv, opis)
+Tip_merenja(tip_merenja_id, naziv)
+Stanje_resursa(stanje_id, naziv)
+Akademsko_zvanje(zvanje_id, naziv)
+Status_izvodjenja(status_id, naziv)
+Eksperiment(eksperiment_id, naziv, tip_merenja_id, fizicka_velicina)
+Eksperiment_Teorija(eksperiment_id, teorija_id)
+Laboratorija(laboratorija_id, naziv, opis_lokacije, tip_laboratorije, kapacitet, nivo_pristupa)
+Resurs(resurs_id, naziv, serijski_broj, stanje_id, masa, dimenzije, materijal)
+Laboratorija_Resurs(laboratorija_id, resurs_id, kolicina)
+Tip_alata(tip_alata_id, naziv, opis)
+Alat(alat_id, datum_nabavke, datum_proizvodnje, tacnost_merenja, datum_kalibracije,
+laboratorija_id, tip_alata_id)
+Istrazivac(istrazivac_id, ime, prezime, datum_rodjenja, kontakt, zvanje_id, oblast_specijalizacije,
+nivo_pristupa)
+Istrazivac_Laboratorija(istrazivac_id, laboratorija_id)
+Eksperiment_Dizajner(eksperiment_id, istrazivac_id)
+Izvodjenje(izvodjenje_id, datum, status_id, broj_ponavljanja_merenja, rezultat,
+merna_nesigurnost, eksperiment_id)
+Istrazivac_Izvodjenje(istrazivac_id, izvodjenje_id, uloga, beleske)
+Sesija(sesija_id, datum, vreme_pocetka, vreme_zavrsetka, temperatura, vlaznost, pritisak,
+izvodjenje_id, laboratorija_id)
+Sesija_Resurs(sesija_id, resurs_id, kolicina)
+Sesija_Alat(sesija_id, alat_id)
+
+
